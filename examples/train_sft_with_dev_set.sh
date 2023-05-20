@@ -2,10 +2,10 @@
 
 CUDA_VISIBLE_DEVICES=0 python ../src/train_sft.py \
     --do_train \
-    --dataset alpaca_gpt4_zh \
+    --dataset med_dataset.json \
     --dataset_dir ../data \
     --finetuning_type lora \
-    --output_dir path_to_sft_checkpoint \
+    --output_dir ../results/med-dataset-520-v1 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 4 \

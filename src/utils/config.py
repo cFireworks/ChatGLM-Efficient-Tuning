@@ -135,7 +135,18 @@ class DataTrainingArguments:
         self.dataset_list: List[DatasetAttr] = []
         for name in dataset_names:
             if name not in dataset_info:
-                raise ValueError("Undefined dataset {} in dataset_info.json.".format(name))
+                # raise ValueError("Undefined dataset {} in dataset_info.json.".format(name))
+                dataset_attr = DatasetAttr(
+                    "file",
+                    file_name=name,
+                    file_sha1=None
+                )
+                dataset_attr.prompt_column = "instruction"
+                dataset_attr.query_column = "input"
+                dataset_attr.response_column = "output"
+                dataset_attr.history_column = "history"
+                self.dataset_list.append(dataset_attr)
+                continue
 
             if "hf_hub_url" in dataset_info[name]:
                 dataset_attr = DatasetAttr("hf_hub", dataset_name=dataset_info[name]["hf_hub_url"])

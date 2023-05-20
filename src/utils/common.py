@@ -379,7 +379,7 @@ def preprocess_data(
                 query, answer = examples["prompt"][i], examples["response"][i]
                 if examples["query"][i]:
                     query += examples["query"][i]
-                if examples["history"][i]:
+                if "history" in examples and examples["history"][i] and len(examples["history"][i]) > 0:
                     prompt = ""
                     history = examples["history"][i]
                     for j, (old_query, response) in enumerate(history):
