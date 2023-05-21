@@ -202,7 +202,7 @@ def smooth(scalars: List[float], weight: Optional[float] = 0.95) -> List[float]:
     return smoothed
 
 
-def plot_loss(training_args: Seq2SeqTrainingArguments, keys: Optional[List[str]] = ["loss"]) -> None:
+def plot_loss(training_args: Seq2SeqTrainingArguments, keys: Optional[List[str]] = ["loss", "eval_loss"]) -> None:
     import matplotlib.pyplot as plt
     data = json.load(open(os.path.join(training_args.output_dir, TRAINER_STATE_NAME), "r"))
 
