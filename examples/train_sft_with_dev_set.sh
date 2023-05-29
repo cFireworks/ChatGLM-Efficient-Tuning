@@ -1,11 +1,18 @@
 #!/bin/bash
+FINETUNING_TYPE=lora
+LR=1e-4
+# p-tuning v2 param
+PRE_SEQ_LEN=128
+# lora param
+RANK=8
 
 CUDA_VISIBLE_DEVICES=0 python ../src/train_sft.py \
     --do_train \
-    --dataset med_dataset.json \
+    --dataset api_dataset_augmentation_v2.json \
     --dataset_dir ../data \
-    --finetuning_type lora \
-    --output_dir ../results/med-dataset-520-v1 \
+    --finetuning_type $FINETUNING_TYPE \
+    --lora_rank $RANK \
+    --output_dir ../results/api_dataset_augmentation-2w-lora-r8lr1em4 \
     --overwrite_cache \
     --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 4 \
@@ -14,11 +21,12 @@ CUDA_VISIBLE_DEVICES=0 python ../src/train_sft.py \
     --evaluation_strategy steps \
     --save_strategy steps \
     --logging_steps 10 \
-    --eval_steps 100 \
-    --save_steps 100 \
-    --learning_rate 5e-5 \
-    --num_train_epochs 3.0 \
+    --eval_steps 500 \
+    --save_steps 500 \
+    --learning_rate $LR \
+    --num_train_epochs 6.0 \
     --dev_ratio 0.01 \
     --load_best_model_at_end \
     --plot_loss \
-    --fp16
+    --fp16 \
+    --pre_seq_len $PRE_SEQ_LEN
