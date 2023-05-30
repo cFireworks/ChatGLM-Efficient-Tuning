@@ -6,9 +6,27 @@ from fastapi import FastAPI, Request
 app = FastAPI()
 
 CHATGLM_ENDPOINT="http://127.0.0.1:8000/"
+EMBEDDING_PATH="embedding"
 TOKEN = ""
 dingtalk_webhook_url=""
 onpremise_webhook_url=""
+
+
+@app.post("/chatglm/embedding")
+async def chatglm_prompt(request: Request):
+    data = await request.json()
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    print(data)
+    response = requests.post(CHATGLM_ENDPOINT + EMBEDDING_PATH, json=data, headers=headers)
+    print(response)
+
+    if response.status_code != 200:
+        return {"message": "error happened"}
+
+    return response.json()clea
 
 
 @app.post("/chatglm/prompt")

@@ -3,6 +3,8 @@ from transformers import AutoTokenizer, AutoModel, HfArgumentParser
 import uvicorn, json, datetime
 import torch
 from utils import ModelArguments, auto_configure_device_map, load_pretrained
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from model_config import *
 
 DEVICE = "cuda"
 DEVICE_ID = "0"
@@ -21,7 +23,7 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def get_local_doc_qa():
-    global model, tokenizer
+    global model, tokenizer, embeddings
     torch_gc()
     parser = HfArgumentParser(ModelArguments)
     model_args, = parser.parse_args_into_dataclasses()
@@ -33,6 +35,9 @@ async def get_local_doc_qa():
     else:
         model = model.cuda()
     model.eval()
+
+    embeddings = HuggingFaceEmbeddings(model_name=embedding_model_dict[EMBEDDING_MODEL],
+                                                model_kwargs={'device': EMBEDDING_DEVICE})
 
 
 @app.post("/")
@@ -60,6 +65,27 @@ async def create_item(request: Request):
         "time": time
     }
     log = "[" + time + "] " + '", prompt:"' + prompt + '", response:"' + repr(response) + '"'
+    print(log)
+    torch_gc()
+    return answer
+
+
+@app.post("/embedding")
+async def create_item(request: Request):
+    json_post_raw = await request.json()
+    json_post = json.dumps(json_post_raw)
+    json_post_list = json.loads(json_post)
+    query = json_post_list.get('query')
+
+    response = embeddings.embed_query(query)
+    now = datetime.datetime.now()
+    time = now.strftime("%Y-%m-%d %H:%M:%S")
+    answer = {
+        "vector": response,
+        "status": 200,
+        "time": time
+    }
+    log = "[" + time + "] " + '", query:"' + query + '", response:"' + repr(response) + '"'
     print(log)
     torch_gc()
     return answer
