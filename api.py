@@ -26,7 +26,7 @@ async def chatglm_prompt(request: Request):
     if response.status_code != 200:
         return {"message": "error happened"}
 
-    return response.json()clea
+    return response.json()
 
 
 @app.post("/chatglm/prompt")
