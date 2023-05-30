@@ -1,16 +1,0 @@
-INFO:     Will watch for changes in these directories: ['/mnt/workspace/ChatGLM-Efficient-Tuning']
-INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [4227] using StatReload
-INFO:     Started server process [4268]
-INFO:     Waiting for application startup.
-05/29/2023 07:07:16 - WARNING - utils.common - Checkpoint is not found at evaluation, load the original model.
-A new version of the following files was downloaded from https://huggingface.co/THUDM/chatglm-6b:
-- tokenization_chatglm.py
-. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
-Loading checkpoint shards:   0%|                                                                                   | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█████████▍                                                                 | 1/8 [00:04<00:28,  4.02s/it]Loading checkpoint shards:  25%|██████████████████▊                                                        | 2/8 [00:09<00:28,  4.67s/it]Loading checkpoint shards:  38%|████████████████████████████▏                                              | 3/8 [00:13<00:21,  4.34s/it]Loading checkpoint shards:  50%|█████████████████████████████████████▌                                     | 4/8 [00:14<00:12,  3.12s/it]Loading checkpoint shards:  62%|██████████████████████████████████████████████▉                            | 5/8 [00:17<00:08,  2.95s/it]Loading checkpoint shards:  75%|████████████████████████████████████████████████████████▎                  | 6/8 [00:21<00:06,  3.49s/it]Loading checkpoint shards:  88%|█████████████████████████████████████████████████████████████████▋         | 7/8 [00:24<00:03,  3.25s/it]Loading checkpoint shards: 100%|███████████████████████████████████████████████████████████████████████████| 8/8 [00:27<00:00,  3.13s/it]Loading checkpoint shards: 100%|███████████████████████████████████████████████████████████████████████████| 8/8 [00:27<00:00,  3.40s/it]
-INFO:     Application startup complete.
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [4268]
-trainable params: 0 || all params: 6173286400 || trainable%: 0.0000
