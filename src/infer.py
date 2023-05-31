@@ -70,6 +70,34 @@ async def create_item(request: Request):
     return answer
 
 
+@app.post("/stream_chat")
+async def create_item(request: Request):
+    json_post_raw = await request.json()
+    json_post = json.dumps(json_post_raw)
+    json_post_list = json.loads(json_post)
+    prompt = json_post_list.get('prompt')
+    history = json_post_list.get('history')
+    max_length = json_post_list.get('max_length')
+    top_p = json_post_list.get('top_p')
+    temperature = json_post_list.get('temperature')
+    async def eval_llm():
+        first = True
+        for response in model.stream_chat(tokenizer,
+                                   prompt,
+                                   history=history,
+                                   max_length=max_length if max_length else 2048,
+                                   top_p=top_p if top_p else 0.7,
+                                   temperature=temperature if temperature else 0.95):
+            if first:
+                first = False
+                yield json.dumps(generate_stream_response_start(),
+                                ensure_ascii=False)
+            yield json.dumps(generate_stream_response(response), ensure_ascii=False)
+        yield json.dumps(generate_stream_response_stop(), ensure_ascii=False)
+        yield "[DONE]"
+    return EventSourceResponse(eval_llm(), ping=10000)
+        
+
 @app.post("/embedding")
 async def create_item(request: Request):
     json_post_raw = await request.json()
