@@ -67,7 +67,7 @@ def do_embedding_by_infer_api(query):
 def do_chat_by_infer_api(question, history, option:dict):
     if option is None:
         option = {}
-    data = {"prompt": question, "history": history, "top_p": option.get("top_p"), "max_length": option.get("max_length"), "temperature": option.get("temperature")}
+    data = {"prompt": question, "history": history, "top_p": option.get("top_p"), "max_length": option.get("max_length"), "temperature": option.get("temperature"), "use_base": option.get("use_base")}
     headers = {
         "Content-Type": "application/json"
     }
@@ -80,7 +80,7 @@ def do_chat_by_infer_api(question, history, option:dict):
 
 
 async def do_chat_stream_by_infer_api(question, history, option:dict):
-    data = {"prompt": question, "history": history, "top_p": option.get("top_p"), "max_length": option.get("max_length"), "temperature": option.get("temperature")}
+    data = {"prompt": question, "history": history, "top_p": option.get("top_p"), "max_length": option.get("max_length"), "temperature": option.get("temperature"), "use_base": option.get("use_base")}    
     headers = {
         "Content-Type": "application/json"
     }

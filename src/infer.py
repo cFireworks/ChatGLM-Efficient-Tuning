@@ -5,6 +5,7 @@ import torch
 from utils import ModelArguments, auto_configure_device_map, load_pretrained
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from model_config import *
+from peft import PeftModel
 
 DEVICE = "cuda"
 DEVICE_ID = "0"
@@ -50,12 +51,23 @@ async def create_item(request: Request):
     max_length = json_post_list.get('max_length')
     top_p = json_post_list.get('top_p')
     temperature = json_post_list.get('temperature')
-    response, history = model.chat(tokenizer,
-                                   prompt,
-                                   history=history,
-                                   max_length=max_length if max_length else 2048,
-                                   top_p=top_p if top_p else 0.7,
-                                   temperature=temperature if temperature else 0.95)
+    use_base = json_post_list.get('use_base')
+    if use_base:
+        with PeftModel.disable_adapter(model):
+            response, history = model.chat(tokenizer,
+                                        prompt,
+                                        history=history,
+                                        max_length=max_length if max_length else 2048,
+                                        top_p=top_p if top_p else 0.7,
+                                        temperature=temperature if temperature else 0.95)
+    else:
+        response, history = model.chat(tokenizer,
+                                    prompt,
+                                    history=history,
+                                    max_length=max_length if max_length else 2048,
+                                    top_p=top_p if top_p else 0.7,
+                                    temperature=temperature if temperature else 0.95)
+
     now = datetime.datetime.now()
     time = now.strftime("%Y-%m-%d %H:%M:%S")
     answer = {

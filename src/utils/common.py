@@ -101,7 +101,9 @@ def init_adapter(
 
             for checkpoint in checkpoints_to_merge:
                 model = PeftModel.from_pretrained(model, checkpoint)
-                model = model.merge_and_unload()
+                model.set_adapter("default")
+                # model.disable_adapter()
+                # model = model.merge_and_unload()
 
             if len(checkpoints_to_merge) > 0:
                 logger.info("Merged {} model checkpoint(s).".format(len(checkpoints_to_merge)))
@@ -205,6 +207,7 @@ def load_pretrained(
     model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, **config_kwargs)
     model = prepare_model_for_training(model) if is_trainable else model
     model = init_adapter(model, model_args, finetuning_args, is_trainable)
+
 
     if not is_trainable:
         model.requires_grad_(False) # fix all params

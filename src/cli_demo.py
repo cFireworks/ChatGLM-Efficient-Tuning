@@ -11,6 +11,7 @@ import platform
 
 from utils import ModelArguments, auto_configure_device_map, load_pretrained
 from transformers import HfArgumentParser
+from peft import PeftModel
 
 
 os_name = platform.system()
@@ -48,6 +49,7 @@ def main():
 
     history = []
     print(welcome)
+    mode = True
     while True:
         try:
             query = input("\nInput: ")
@@ -64,18 +66,39 @@ def main():
             os.system(clear_command)
             print(welcome)
             continue
+        if query.strip() == "change":
+            mode = not mode
+            os.system(clear_command)
+            print("base mode now" if mode else "lora mode now")
+            continue
 
-        count = 0
-        for _, history in model.stream_chat(tokenizer, query, history=history):
-            if stop_stream:
-                stop_stream = False
-                break
-            else:
-                count += 1
-                if count % 8 == 0:
-                    os.system(clear_command)
-                    print(build_prompt(history), flush=True)
-                    signal.signal(signal.SIGINT, signal_handler)
+        if mode:
+            with PeftModel.disable_adapter(model):
+                # 此时PEFTModel将只使用基础模型进行计算
+                count = 0
+                for _, history in model.stream_chat(tokenizer, query, history=history):
+                    if stop_stream:
+                        stop_stream = False
+                        break
+                    else:
+                        count += 1
+                        if count % 8 == 0:
+                            os.system(clear_command)
+                            print(build_prompt(history), flush=True)
+                            signal.signal(signal.SIGINT, signal_handler)
+        else:
+            # 此时PEFTModel将只使用基础模型进行计算
+            count = 0
+            for _, history in model.stream_chat(tokenizer, query, history=history):
+                if stop_stream:
+                    stop_stream = False
+                    break
+                else:
+                    count += 1
+                    if count % 8 == 0:
+                        os.system(clear_command)
+                        print(build_prompt(history), flush=True)
+                        signal.signal(signal.SIGINT, signal_handler)
         os.system(clear_command)
         print(build_prompt(history), flush=True)
 
